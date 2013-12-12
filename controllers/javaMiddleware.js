@@ -25,8 +25,9 @@ JavaMiddleware.prototype = {
 
     }(1234),
 
-    deployBuild: function (buildId, lab) {
-        var  case2 = spawn('java', ['ReturnValue', buildId, lab]);
+    deployBuild: function (fusionjob, deploy, stream, lab) {
+        var  case2 = spawn('java', ['TestPreemptive', fusionjob, deploy, stream, lab], { cwd: undefined,
+  env: {CLASSPATH: '/Users/sbalamurugan/Documents/WFM/controllers/fluent-hc-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpcore-4.2.4.jar:/Users/sbalamurugan/Documents/WFM/controllers/commons-codec-1.6.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpclient-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpmime-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/commons-logging-1.1.1.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpclient-cache-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/'}});
 
         case2.stdout.on('data', function (data) {
             console.log(data.length);
@@ -40,7 +41,7 @@ JavaMiddleware.prototype = {
         case2.on('close', function (code) {
             console.log('child process exited with code ' + code);
         });
-    }(1234, 3244)
+    }('mohan_deploy', 'deploy', 'PF-ISO-109_int', 'vpslab052_l')
 };
 
 module.exports = JavaMiddleware;
