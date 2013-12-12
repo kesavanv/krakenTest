@@ -42,13 +42,6 @@ TODO:
 			}, function(err, data) { 
 				latestMsg = data.messages[0];
 
-				console.log('~~~~~~~~~~~~~~~~~~~');
-
-				var str = '     kesava sad fas asd   ';
-				console.log(str);
-				console.log(S(str).trim().s);
-				// console.log($.trim(str));
-
 				//proceed if the phone number is whitelisted
 				// if (isWhitelisted(latestMsg.from)) {
 				if (_.contains(whitelist, latestMsg.from)) {
@@ -71,13 +64,6 @@ TODO:
 						console.log('No new messages ... ...');
 					}
 				}
-
-				// messageId = (data.messages[0].sid === messageId)  ;
-				// console.log('UniqueId: ', data.messages[0].sid);
-				// console.log('From: ', data.messages[0].from);
-				// console.log('LatestMsg:  ',data.messages[0].body); 
-				// console.log('TimeStamp:  ',data.messages[0].date_sent);
-				console.log('---------------------');
 			});
 		}, 1000);
 		next();
