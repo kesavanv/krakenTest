@@ -1,0 +1,38 @@
+{>"layouts/master" /}
+
+{<body}
+	<header>
+		<div class="formHeader">
+			<h2>Registration</h2>
+		</div>
+	</header>
+	<div class="registerForm" id="registerForm">
+        <form class="form-horizontal" role="form" action="" method="post">
+	  		<div class="form-group">
+		   		<label for="mobileNumber" class="col-sm-4 control-label">Mobile Number :</label>
+		    	<div class="col-sm-8">
+		     	   <input type="text" class="form-control" id="mobileNumber" placeholder="Mobile Number">
+	    		</div>
+		  	</div>
+			<div class="form-group">
+			  		 <label for="channels" class="col-sm-4 control-label">Channels</label>
+			</div>
+		  <div class="form-row">
+			  <div class="row">
+			  	<dl>
+				  <dt class="col-sm-4">Tools Supports</dt>
+				  <dd class="col-sm-8">Inputs for actions</dd>
+				  <dt class="col-sm-4" >
+				  	<div class="thumbnail">Jenkins</div></dt>
+				  <dd class="col-sm-8">Build ID &lt;buildID&gt; StreamName &lt;Stream name&gt;</dd>
+				  <dt class="col-sm-4" ><div class="thumbnail">Jenkins</div></dt>
+				  <dd class="col-sm-8">Build ID &lt;buildID&gt; StreamName &lt;Stream name&gt;</dd>
+				</dl>
+			</div>
+			<div class="buttons">
+			  <button type="submit" class="btn btn-primary active save">Save</button>
+			  <button type="button" class="btn btn-default 	active">Cancel</button>
+			</div>
+		</form>
+	</div>
+{/body}

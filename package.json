@@ -25,7 +25,8 @@
     "makara": "~0.3.0",
     "twilio": "~1.4.0",
     "underscore": "~1.5.2",
-    "string": "~1.7.0"
+    "string": "~1.7.0",
+    "mongolian": "~0.1.15"
   },
   "devDependencies": {
     "mocha": "~1.10.0",
