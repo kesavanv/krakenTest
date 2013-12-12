@@ -22,14 +22,14 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 /**
- * Simple class to launch a jenkins build on run@Cloud platform, should also work on every jenkins instance (not tested)
+ * Simple class to launch a jenkins build on run@Cloud platform, should also work on every jenkins instance (not tested).
  *
  */
 public class TestPreemptive {
 
 	public static void main(String[] args) {
         String jobName = "arun_build01";
-        String buildToken = "build";
+        String task = "build";
         String streamName = "spec_xmlreg";
         String lab = "vpslablvs052_l";
 
@@ -37,7 +37,7 @@ public class TestPreemptive {
            jobName = args[0];
         }
         if(args.length>1 && args[1] != null) {
-           buildToken = args[1];
+           task = args[1];
         }
         if(args.length>2 && args[2] != null) {
            streamName = args[2];
@@ -46,20 +46,20 @@ public class TestPreemptive {
            lab = args[3];
         }
 
-        new TestPreemptive().processRequest(jobName, buildToken, streamName, lab);
+        new TestPreemptive().processRequest(jobName, task, streamName, lab);
     }
 
 
 
 
-    public void processRequest(String jobName, String buildToken, String streamName, String lab ) {
+    public void processRequest(String jobName, String task, String streamName, String lab ) {
 
         // https://arramakrishnan:build@fusion.paypal.com/jenkins/job/arun_build01/build
         // https://fusion.paypal.com/jenkins/job/arun_build01/build
         // Credentials
 		String username = "arramakrishnan"; //"YOUR_USERNAME";
 		String password = "Escape999$"; //"YOUR_PASSWORD";
-
+        String buildToken = "build";
 		// Jenkins url
 		String jenkinsUrl = "https://fusion.paypal.com/jenkins"; // "JENKINS_URL";
 
@@ -97,7 +97,10 @@ public class TestPreemptive {
 
 		// You get request that will start the build
 		//String getUrl = jenkinsUrl + "/job/" + jobName + "/build?token=" + buildToken;
-        String getUrl = jenkinsUrl + "/job/" + jobName + "/buildWithParameters?token=" + buildToken + "&BRANCH=" + streamName + "&LAB=" + lab;
+        String getUrl = jenkinsUrl + "/job/" + jobName + "/buildWithParameters?token=" + buildToken + "&BRANCH=" + streamName;
+
+        if("deploy".equals(task))
+            getUrl += "&LAB=" + lab;
 
         HttpGet get = new HttpGet(getUrl);
 
@@ -105,8 +108,13 @@ public class TestPreemptive {
 			// Execute your request with the given context
 			HttpResponse response = client.execute(get, context);
 			HttpEntity entity = response.getEntity();
-			//vijay EntityUtils.consume(entity);
-		}
+			EntityUtils.consume(entity);
+            if (response != null && response.getStatusLine() != null) {
+                if (response.getStatusLine().getStatusCode() == 200)
+                    System.out.println("success");
+            }
+            System.out.println("failure");
+        }
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
