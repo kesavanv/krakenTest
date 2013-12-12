@@ -7,29 +7,89 @@ var twilio = require('twilio'),
 	client = new twilio.RestClient(accountSid, authToken),
 	fs = require('fs'),
 	_=require('underscore'),
-	S = require('string');
+	S = require('string'),
+	JavaMiddleware = require('./javaMiddleware');
 
 
 module.exports = function (server) {
-/*******
-TODO:
-- if the mobile number is whitelisted, process Msg, else note the mobile number & quit
-- Process Msg: Parse the msg and split/recongnize the Shortcodes
-- Send data to the Java file.
-********/
+
 	var appData = JSON.parse(fs.readFileSync('./public/data/temp.json', 'utf8')),
 		whitelist = appData.whitelist;
 
-	function processMessage (message) {
+	function processRequest (message, sender) {
+		var parsedMessage = S(message).parseCSV(' ', null),
+			command = parsedMessage[0].toUpperCase(),
+			oReply = {},
+			javaMiddleware = new JavaMiddleware();
 
+		switch (command) {
+		case 'HELP':
+			console.log('send HELP');
+			break;
+
+		case 'BUILD':
+			var streamName = parsedMessage[1];
+			console.log('build this stream: ', streamName);
+			// javaMiddleware.buildStream(streamName);
+			break;
+
+		case 'DEPLOY':
+			var buildId = parsedMessage[1],
+				lab = parsedMessage[2];
+			console.log('Deploy this build Id:', buildId, 'in the lab', lab);
+			// javaMiddleware.deployBuild(buildId, lab);
+			break;
+
+		default:
+			console.log('Not a valid COMMAND, show HELP');
+			break;
+		}
+
+		return sender;
 	}
 
-	function processRequest (message, sender) {
-		// processMessage(message);
-		if (S(message).startsWith("BUILD ")) {
-			
+	function findLatestMsg (messageList) {
+		var msgLength = messageList.length,
+			latestMsg, 
+			i;
+
+		for (i=0; i<=msgLength; i+=1) {
+			console.log(messageList[i].direction);
+			if (messageList[i].direction === 'inbound') {
+				latestMsg = messageList[i];
+				break;
+			}
 		}
-		return message;
+		return latestMsg;
+	}
+
+	function verifyMessage (latestMsg) {
+		var messageId = '';
+
+		//proceed if the phone number is whitelisted
+		if (_.contains(whitelist, latestMsg.from)) {
+			// console.log('this number is whitelisted');
+
+			//check if 'sid' is same as previous one
+			if (latestMsg.sid !== messageId) {
+				console.log('NEW MESSAGE ARRIVED');
+				console.log(latestMsg.body);
+				messageId = latestMsg.sid;
+
+				var result = processRequest(latestMsg.body, latestMsg.from);
+
+			} else {
+				// console.log('No new messages ... ...');
+			}
+		} 
+		else {
+			if (latestMsg.sid !== messageId) {
+				console.log('Unregistered user ... !', latestMsg.from);
+			} 
+			else{
+				// console.log('No new messages ... ...');
+			}
+		}
 	}
 
 	function process (req, res, next) {
@@ -39,32 +99,8 @@ TODO:
 		setInterval (function () {
 			client.messages.list({    
 			}, function(err, data) { 
-				latestMsg = data.messages[0];
-
-				//proceed if the phone number is whitelisted
-				// if (isWhitelisted(latestMsg.from)) {
-				if (_.contains(whitelist, latestMsg.from)) {
-					console.log('this number is whitelisted');
-
-					//check if 'sid' is same as previous one
-					if (latestMsg.sid !== messageId) {
-						console.log('NEW MESSAGE ARRIVED');
-						console.log(latestMsg.body);
-						messageId = latestMsg.sid;
-
-						var result = processRequest(latestMsg.body, latestMsg.from);
-
-					} else {
-						console.log('No new messages ... ...');
-					}
-
-				} else {
-					if (latestMsg.sid !== messageId) {
-						console.log('Unregistered user ... !', latestMsg.from);
-					} else{
-						console.log('No new messages ... ...');
-					}
-				}
+				latestMsg = findLatestMsg(data.messages);
+				verifyMessage(latestMsg);
 			});
 		}, 1000);
 		next();
