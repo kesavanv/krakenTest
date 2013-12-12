@@ -1,12 +1,14 @@
 'use strict';
-
+//var java = require("java");
 var spawn = require('child_process').spawn;
 
 var JavaMiddleware = function () {};
 
 JavaMiddleware.prototype = {
-    buildStream: function (streamName) {
-        var case1 = spawn('java', ['Echo', streamName]);
+    buildStream: function (streamName){
+        var case1 = spawn('java', ['TestPreemptive'], { cwd: undefined,
+  env: {CLASSPATH: '/Users/sbalamurugan/Documents/WFM/controllers/fluent-hc-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpcore-4.2.4.jar:/Users/sbalamurugan/Documents/WFM/controllers/commons-codec-1.6.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpclient-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpmime-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/commons-logging-1.1.1.jar:/Users/sbalamurugan/Documents/WFM/controllers/httpclient-cache-4.2.5.jar:/Users/sbalamurugan/Documents/WFM/controllers/'}}
+);
 
         case1.stdout.on('data', function (data) {
             console.log(data.length);
@@ -21,7 +23,7 @@ JavaMiddleware.prototype = {
             console.log('child process exited with code ' + code);
         });
 
-    },
+    }(1234),
 
     deployBuild: function (buildId, lab) {
         var  case2 = spawn('java', ['ReturnValue', buildId, lab]);
@@ -38,7 +40,7 @@ JavaMiddleware.prototype = {
         case2.on('close', function (code) {
             console.log('child process exited with code ' + code);
         });
-    }
+    }(1234, 3244)
 };
 
 module.exports = JavaMiddleware;
