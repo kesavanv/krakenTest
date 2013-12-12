@@ -113,7 +113,7 @@ public class TestPreemptive {
                 if (response.getStatusLine().getStatusCode() == 200)
                     System.out.println("success");
             }
-            System.out.println("failure");
+            else{System.out.println("failure");}
         }
 		catch (IOException e) {
 			// TODO Auto-generated catch block
