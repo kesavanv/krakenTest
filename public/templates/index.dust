@@ -1,9 +1,58 @@
 {>"layouts/master" /}
 
 {<body}
-	<div class="jumbotron">
-	  <h1>{@pre type="content" key="index.greeting"/}</h1>
-	  <p>Desc .... </p> 
-	  <p><a href="/register" class="btn btn-primary btn-lg" role="button">REGISTER</a></p>
+<div id="homePage">
+	<div class="container" style="margin:0 auto; display: block; width: 1003px;">
+		<div class="row">
+			<div class="col-md-5 pull-left"><p style="padding: 10px 0 0 10px; margin:0">logged in as <b>sbalamurugan</b></p></div>
+			<div class="col-md-2 pull-right"><p style="padding: 10px 0 0 10px; margin:0; text-align: right"><a href="#">Logout</a></p></div>
+		</div>
 	</div>
+
+	<div class="jumbotron">
+		<div style="margin-top:250px;">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-offset col-md-6" style="margin-left: 13px;">
+						<input type="text" class="form-control" id="mobileNumber" placeholder="Your Mobile Number">
+					</div>
+					<div class="col-md-2">
+	  					<p style="text-align: left">
+		  					<button class="btn btn-success btn-lg" style="padding:4px 16px" data-toggle="modal" data-target="#myModal">
+							  Register
+							</button>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="width: 1003px;"><img src="../../img/kraken.jpg" class="pull-left" /><p style="padding: 10px 10px 10px 60px;">Powered by <a href="http://krakenjs.com/">KrakenJs</a> | <a href="https://github.paypal.com/kvaratharajan/WFM">github repo</a></p></div>
+	
+
+	<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="top: 60px;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Successfully Registered</h4>
+      </div>
+      <div class="modal-body">
+        <div id="successMsg">
+        	<p>Send SMS to <span class="smsNumber">+12024996569</span> in below pattern</p>
+        	<ul>
+        		<li>BUILD <span class="code">&lt;fusionJob&gt;</span> <span class="code">&lt;streamName&gt;</span></li>
+        		<li>DEPLOY <span class="code">&lt;fusionJob&gt;</span> <span class="code">&lt;streamName&gt;</span> <span class="code">&lt;labName&gt;</span></li>
+        	</ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ok Got it!</button>
+      </div> 
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</div>
 {/body}
