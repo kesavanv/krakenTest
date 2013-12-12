@@ -1,14 +1,17 @@
-'use strict';
+require(['config'], function (config) {
+    "use strict";
 
+    require(["router"],
+        function (Router) {
 
-require(['config' /*, Dependencies */], function (config) {
+            /* Create instance of the App */
+            var app = {
+                initialize : function () {
 
-    var app = {
-        initialize: function () {
-            // Your code here
-        }
-    };
+                }
+            };
 
-    app.initialize();
-
+            /* Initialize the instance */
+            app.initialize();
+        });
 });

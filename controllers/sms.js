@@ -28,8 +28,11 @@ module.exports = function (server) {
 	function processRequest (message, sender) {
 		var parsedMessage = S(message).parseCSV(' ', null),
 			command = parsedMessage[0].toUpperCase(),
-			helpMsg = '\nsend\nBUILD <streamName>\nDEPLOY <BuildId> <lab>\n',
-			javaMiddleware = new JavaMiddleware();
+			helpMsg = '\nsend to +12024996569\nBUILD <fusionJob> <streamName>\nDEPLOY <fusionJob> <streamName> <labName>\n',
+			javaMiddleware = new JavaMiddleware(),
+			fusionJob,
+			streamName,
+			labName;
 
 		switch (command) {
 		case 'HELP':
@@ -38,15 +41,17 @@ module.exports = function (server) {
 			break;
 
 		case 'BUILD':
-			var streamName = parsedMessage[1];
+			fusionJob = parsedMessage[1];
+			streamName = parsedMessage[2];
 			console.log('initiate Build stream: ', streamName);
 			// javaMiddleware.buildStream(streamName);
 			// replyBack('your Build is intiated', sender);
 			break;
 
 		case 'DEPLOY':
-			var buildId = parsedMessage[1],
-				lab = parsedMessage[2];
+			fusionJob = parsedMessage[1];
+			streamName = parsedMessage[2];
+			labName = parsedMessage[3];
 			console.log('Deploy Buildid: ', buildId, 'in the lab: ', lab);
 			// javaMiddleware.deployBuild(buildId, lab);
 			// replyBack('build deployment intiated', sender);
@@ -107,6 +112,9 @@ module.exports = function (server) {
 	}
 
 	function process (req, res, next) {
+		//first time msg hardcoded for demo purpose
+		processRequest('HELP', 'dummySender');
+
 		setInterval (function () {
 			client.messages.list({    
 			}, function(err, data) { 
