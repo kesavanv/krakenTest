@@ -13,8 +13,6 @@ var twilio = require('twilio'),
 module.exports = function (server) {
 /*******
 TODO:
-- get latest message for every second
-- ignore message if 'sid' is same as previous one, else continue
 - if the mobile number is whitelisted, process Msg, else note the mobile number & quit
 - Process Msg: Parse the msg and split/recongnize the Shortcodes
 - Send data to the Java file.
@@ -22,15 +20,16 @@ TODO:
 	var appData = JSON.parse(fs.readFileSync('./public/data/temp.json', 'utf8')),
 		whitelist = appData.whitelist;
 
-	function isWhitelisted (phoneNumber) {
-		var result = false;
-		for (var index in whitelist) {
-			if (whitelist[index] === phoneNumber) {
-				result = true;
-				break;
-			}
+	function processMessage (message) {
+
+	}
+
+	function processRequest (message, sender) {
+		// processMessage(message);
+		if (S(message).startsWith("BUILD ")) {
+			
 		}
-		return result;
+		return message;
 	}
 
 	function process (req, res, next) {
@@ -52,6 +51,8 @@ TODO:
 						console.log('NEW MESSAGE ARRIVED');
 						console.log(latestMsg.body);
 						messageId = latestMsg.sid;
+
+						var result = processRequest(latestMsg.body, latestMsg.from);
 
 					} else {
 						console.log('No new messages ... ...');
