@@ -2,9 +2,7 @@
 
 var twilio = require('twilio'),
 	config = require('nconf'),
-	accountSid = config.get('accountSid'),
-	authToken = config.get('authToken'),
-	client = new twilio.RestClient(accountSid, authToken),
+	client = new twilio.RestClient(config.get('accountSid'), config.get('authToken')),
 	fs = require('fs'),
 	_=require('underscore'),
 	S = require('string'),
@@ -14,34 +12,50 @@ var twilio = require('twilio'),
 module.exports = function (server) {
 
 	var appData = JSON.parse(fs.readFileSync('./public/data/temp.json', 'utf8')),
-		whitelist = appData.whitelist;
+		whitelist = appData.whitelist,
+		messageId = '';
+
+    function replyBack (message, recipient) {
+        client.messages.create({  
+            to: '+919840224594',
+            from: '+12024996569', 
+            body: message, 
+        }, function(err, message) { 
+            console.log(message.sid); 
+        });
+    }
 
 	function processRequest (message, sender) {
 		var parsedMessage = S(message).parseCSV(' ', null),
 			command = parsedMessage[0].toUpperCase(),
-			oReply = {},
+			helpMsg = '\nsend\nBUILD <streamName>\nDEPLOY <BuildId> <lab>\n',
 			javaMiddleware = new JavaMiddleware();
 
 		switch (command) {
 		case 'HELP':
 			console.log('send HELP');
+			replyBack(helpMsg, sender);
 			break;
 
 		case 'BUILD':
 			var streamName = parsedMessage[1];
-			console.log('build this stream: ', streamName);
+			console.log('initiate Build stream: ', streamName);
 			// javaMiddleware.buildStream(streamName);
+			// replyBack('your Build is intiated', sender);
 			break;
 
 		case 'DEPLOY':
 			var buildId = parsedMessage[1],
 				lab = parsedMessage[2];
-			console.log('Deploy this build Id:', buildId, 'in the lab', lab);
+			console.log('Deploy Buildid: ', buildId, 'in the lab: ', lab);
 			// javaMiddleware.deployBuild(buildId, lab);
+			// replyBack('build deployment intiated', sender);
 			break;
 
 		default:
 			console.log('Not a valid COMMAND, show HELP');
+			var invalidReply = '\nInvalid Command' + helpMsg;
+			replyBack(invalidReply, sender);
 			break;
 		}
 
@@ -63,8 +77,8 @@ module.exports = function (server) {
 		return latestMsg;
 	}
 
-	function verifyMessage (latestMsg) {
-		var messageId = '';
+	function validate (messageList) {
+		var latestMsg = findLatestMsg(messageList);
 
 		//proceed if the phone number is whitelisted
 		if (_.contains(whitelist, latestMsg.from)) {
@@ -93,14 +107,10 @@ module.exports = function (server) {
 	}
 
 	function process (req, res, next) {
-		var messageId = '',
-			latestMsg;
-
 		setInterval (function () {
 			client.messages.list({    
 			}, function(err, data) { 
-				latestMsg = findLatestMsg(data.messages);
-				verifyMessage(latestMsg);
+				validate(data.messages);
 			});
 		}, 1000);
 		next();
@@ -108,7 +118,6 @@ module.exports = function (server) {
 
     server.get('/sms', process, function (req, res) {
         var model = { name: 'wfm' };
-        
         res.render('index', model);
         
     });
