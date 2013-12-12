@@ -28,6 +28,32 @@ import org.apache.http.util.EntityUtils;
 public class TestPreemptive {
 
 	public static void main(String[] args) {
+        String jobName = "arun_build01";
+        String buildToken = "build";
+        String streamName = "spec_xmlreg";
+        String lab = "vpslablvs052_l";
+
+        if(args.length>0 && args[0] != null) {
+           jobName = args[0];
+        }
+        if(args.length>1 && args[1] != null) {
+           buildToken = args[1];
+        }
+        if(args.length>2 && args[2] != null) {
+           streamName = args[2];
+        }
+        if(args.length>3 && args[3] != null) {
+           lab = args[3];
+        }
+
+        new TestPreemptive().processRequest(jobName, buildToken, streamName, lab);
+    }
+
+
+
+
+    public void processRequest(String jobName, String buildToken, String streamName, String lab ) {
+
         // https://arramakrishnan:build@fusion.paypal.com/jenkins/job/arun_build01/build
         // https://fusion.paypal.com/jenkins/job/arun_build01/build
         // Credentials
@@ -38,12 +64,16 @@ public class TestPreemptive {
 		String jenkinsUrl = "https://fusion.paypal.com/jenkins"; // "JENKINS_URL";
 
 		// Build name
-		String jobName = "vijaybuild"; //"JOB";
+		//String jobName = "mohan_deploy";//"arun_build01";//"vijaybuild"; //"JOB";
 
 		// Build token
-		String buildToken = "buildt"; //"BUILD_TOKEN";
+		//String buildToken = "build"; //"BUILD_TOKEN";
 
-		// Create your httpclient
+       // String streamName = "spec_xmlreg";
+
+        //String lab = "vpslablvs052_l";
+
+        // Create your httpclient
 		DefaultHttpClient client = new DefaultHttpClient();
 
 
@@ -66,8 +96,10 @@ public class TestPreemptive {
 		client.addRequestInterceptor(new PreemptiveAuth(), 0);
 
 		// You get request that will start the build
-		String getUrl = jenkinsUrl + "/job/" + jobName + "/build?token=" + buildToken;
-		HttpGet get = new HttpGet(getUrl);
+		//String getUrl = jenkinsUrl + "/job/" + jobName + "/build?token=" + buildToken;
+        String getUrl = jenkinsUrl + "/job/" + jobName + "/buildWithParameters?token=" + buildToken + "&BRANCH=" + streamName + "&LAB=" + lab;
+
+        HttpGet get = new HttpGet(getUrl);
 
 		try {
 			// Execute your request with the given context
@@ -79,9 +111,11 @@ public class TestPreemptive {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
 
-	/**
+
+    }
+
+    /**
 	 * Preemptive authentication interceptor
 	 *
 	 */
