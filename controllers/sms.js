@@ -21,7 +21,8 @@ module.exports = function (server) {
             from: '+12024996569', 
             body: message, 
         }, function(err, message) { 
-            console.log(message.sid); 
+        	console.log('SENDING MESSAGE:')
+            console.log(message); 
         });
     }
 
@@ -32,7 +33,8 @@ module.exports = function (server) {
 			javaMiddleware = new JavaMiddleware(),
 			fusionJob,
 			streamName,
-			labName;
+			labName,
+			result;
 
 		switch (command) {
 		case 'HELP':
@@ -44,17 +46,17 @@ module.exports = function (server) {
 			fusionJob = parsedMessage[1];
 			streamName = parsedMessage[2];
 			console.log('initiate Build stream: ', streamName);
-			// javaMiddleware.buildStream(streamName);
-			// replyBack('your Build is intiated', sender);
+			result = javaMiddleware.buildStream(fusionJob, streamName);
+			replyBack(result, sender);
 			break;
 
 		case 'DEPLOY':
 			fusionJob = parsedMessage[1];
 			streamName = parsedMessage[2];
 			labName = parsedMessage[3];
-			console.log('Deploy Buildid: ', buildId, 'in the lab: ', lab);
-			// javaMiddleware.deployBuild(buildId, lab);
-			// replyBack('build deployment intiated', sender);
+			console.log('Deploy Buildid: ', fusionJob, 'in', streamName,  'lab: ', labName);
+			result = javaMiddleware.deployBuild(fusionJob, streamName, labName);
+			replyBack( result, sender);
 			break;
 
 		default:
@@ -117,8 +119,10 @@ module.exports = function (server) {
 
 		setInterval (function () {
 			client.messages.list({    
-			}, function(err, data) { 
-				validate(data.messages);
+			}, function(err, data) {
+				if (!err) {
+					validate(data.messages);
+				} 
 			});
 		}, 1000);
 		next();
