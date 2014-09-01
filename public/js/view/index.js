@@ -1,37 +1,32 @@
+/* global window:true, document:true, define:true, require:true, console:true */
 define([
-    'nougat',
     'jquery',
     'backbone',
-    'BaseView',
-    'jqueryUI'
+    'BaseView'
 ],
-function (nougat, $, Backbone, BaseView, ui) {
+  function ($, Backbone, BaseView, Dummy) {
 
     'use strict';
 
     var View = BaseView.extend({
-        el: '#homePage',
-
-        events: {
-            'click .btn-success': 'handleClick',
-            'hidden.bs.modal #myModal': 'changePage'
+        simpleRender: function () {
+            var renderView = new BaseView();
+            renderView.model = new Backbone.Model();
+            renderView.template = 'subview';
+            renderView.model.set(Dummy);
+            renderView.afterRender = function (content) {
+                $('#testView').html(content);
+            };
+            renderView._doRender = function(content, template) {
+                // $(this.eDest).html(content);
+            };
+            renderView.render();
         },
 
         initialize: function () {
-        },
-
-        handleClick: function (e) {
-            e.preventDefault();
-            var regNum = $.trim($('#mobileNumber').val());
-            if (regNum !== '') {
-              $('.modal-title').html('Successfully registered ' + regNum);
-            }
-        },
-
-        changePage: function (e) {
-            window.location.replace("http://localhost:8000/sms");
+            console.log('client JS loaded');
+            this.simpleRender();
         }
     });
     return View;
 });
-

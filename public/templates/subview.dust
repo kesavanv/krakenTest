@@ -1,0 +1,10 @@
+Sub view: <br>
+
+This view will be rendered from client js...
+
+<div style="border: 1px solid black; width: 150px; padding: 20px; ">
+
+{>"include1"/}
+{>"include2"/}
+{>"include3"/}
+</div>
